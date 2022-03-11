@@ -1,41 +1,78 @@
+# coding: utf-8
+
 from words import words
 
 
 # Permet de trouver le mot le plus problème selon les options cités au-dessus
-def searchWord(letterNb, wordsTryed, lettersFnd, lettersInWrd):
-    global wordsList
-    lettersFnd = lettersFnd.split()
-    # faire ça dans une fonction init
-    wordsList = wordsList[lettersFnd[0]]
+def initSearch(tryedWords, found, inWord):
+    print("Initialisation ...")
+    potentialWords = words.get(found[0])
+    letters = list(set(found + inWord))
+    letters.remove(".")
+    for word in tryedWords:
+        # Supprime les mots qui ont déjà été essayé
+        try:
+            potentialWords.remove(word)
+        except ValueError:
+            print(f"Le mot {word} n'existe pas !")
+        # Supprime les mots avec des lettres qui ne sont pas dans le mot recherché
+        for letter in letters:
+            word = word.replace(letter, "")
+        wrd = []
+        for letter in word:
+            wrd.append(letter)
+        if len(wrd) > 0:
+            for potentialWord in potentialWords:
+                for letter in wrd:
+                    if potentialWord.find(letter) != -1:
+                        potentialWords.remove(potentialWord)
+    # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
+    # dont les lettres sont mal positionnées
+    for potentialWord in potentialWords:
+        if len(found) != len(potentialWord):
+            potentialWords.remove(potentialWord)
+        for letter in letters:
+            if potentialWord.find(letter) == -1:
+                potentialWords.remove(potentialWord)
+                break
+        letterId = 0
+        for letter in found:
+            if letter != ".":
+                if potentialWord[letterId] != found[letterId]:
+                    potentialWords.remove(potentialWord)
+            letterId += 1
+    return potentialWords
+
+
+# Permet de demander à l'utilisateur l'avancer de la recherche
+def ask():
+    found = "."
+    while found.startswith("."):
+        found = input("Indiquez les lettres trouvées (en rouge) exemple : M..US.O. où les points représentent les"
+                      " lettres non trouvées >> ")
+        if found.startswith("."):
+            print("Il manque la première lettre !")
+    founds = found.lower().replace(" ", "")
+    found = []
+    for letter in founds:
+        found.append(letter)
+    print(found)
+    inWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ", "").split(",")
+    return found, inWord
 
 
 # Execution de la procedure pour trouver le mot
 if __name__ == '__main__':
-    print("Petite présentation tel un mec qui veut montrer qu'il a des skills alors qu'il connait juste le 'color a'")
     print("   _____          __               __________        __   \n",
           "  /     \\   _____/  |_ __ __  _____\\______   \\ _____/  |_ \n",
           " /  \\ /  \\ /  _ \\   __\\  |  \\/  ___/|    |  _//  _ \\   __\\\n",
           "/    Y    (  <_> )  | |  |  /\\___ \\ |    |   (  <_> )  |  \n",
           "\\____|__  /\\____/|__| |____//____  >|______  /\\____/|__|  \n",
-          "        \\/                       \\/        \\/             \n")
-    print("MotusBot, le bot qui trouve le mot pour vous !\n")
+          "        \\/                       \\/        \\/             \nby SomGrap\n")
+    print("MotusBot, le bot qui trouve les mots pour vous !\n")
     wordsList = words
-    letterNumber = 0
-    while letterNumber == 0:
-        try:
-            letterNumber = int(input("Indiquez le nombre de lettre dans le mot >> "))
-        except ValueError:
-            print("Vous ne pouvez pas entrer du texte ici !")
-        if 6 > letterNumber or letterNumber > 9:
-            print("Les mots de Sutom contiennent entre 6 et 9 lettres !")
-            letterNumber = 0
     wordsTryedList = input("Indiquez les mots que vous avez essayé (si vous avez essayez plusieurs mot, les séparés par"
-                           "des virgules) >> ")
-    lettersFound = "."
-    while lettersFound.startswith("."):
-        lettersFound = input("Indiquez les lettres trouvées (en rouge) exemple : N.I.A.Z. >> ")
-        if lettersFound.startswith("."):
-            print("Il manque la première lettre !")
-    lettersInWord = input("Indiquez les lettres présent dans le mot et non citées au-dessus (en jaune) >> ")
-    print("Recherche ...")
-    searchWord(letterNumber, wordsTryedList, lettersFound, lettersInWord)
+                           " des virgules) >> ").lower().replace(" ", "").split(",")
+    print(wordsTryedList)
+    lettersFound, lettersInWord = ask()
+    print(initSearch(wordsTryedList, lettersFound, lettersInWord))
