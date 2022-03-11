@@ -32,7 +32,7 @@ def ask(isInit = False):
         foundLetters.append(letter)
     letterInWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ",
                                                                                                           "").split(",")
-    return foundLetters, letterInWord
+    return False, foundLetters, letterInWord
 
 
 # Fait la recherche du mot
@@ -97,9 +97,8 @@ if __name__ == '__main__':
     print("MotusBot, le bot qui trouve les mots pour vous !\n")
     wordsTryedList = input("Indiquez les mots que vous avez essayé (si vous avez essayez plusieurs mot, les séparés par"
                            " des virgules) >> ").lower().replace(" ", "").split(",")
-    lettersFound, lettersInWord = ask(True)
+    found, lettersFound, lettersInWord = ask(True)
     wordsList = initSearch(lettersFound)
-    found = False
     while not found:
         wordsList = processSearch(wordsList, wordsTryedList, lettersFound, lettersInWord)
         found, lettersFound, lettersInWord = ask()
