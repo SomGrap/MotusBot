@@ -32,12 +32,9 @@ def initSearch(tryedWords, found, inWord):
                     break
             if delete:
                 continue
-        print(len(found), " ", len(potentialWord))
         if len(found) != len(potentialWord):
-            print("Supr")
             potentialWords.remove(potentialWord)
             continue
-        print("end")
         for letter in letters:
             if potentialWord.find(letter) == -1:
                 potentialWords.remove(potentialWord)
@@ -51,6 +48,8 @@ def initSearch(tryedWords, found, inWord):
             if potentialWord[i] != found[i]:
                 potentialWords.remove(potentialWord)
                 break
+    print(len(potentialWords))
+    potentialWords.sort()
     return potentialWords
 
 
