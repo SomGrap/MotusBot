@@ -37,13 +37,14 @@ def ask(isInit = False):
 
 # Fait la recherche du mot
 def processSearch(potentialWords, tryedWords, letterFound, letterInWord):
+    potentialWords = list(potentialWords)
     # Liste des lettres présentes dans le mot
     letters = list(set(letterFound + letterInWord))
     letters.remove(".")
     wordLetter = []
     # Pour chaque mot essayer
     for word in tryedWords:
-        # Supprime les mots qui ont déjà été essayé
+        # Supprime les mots qui ont déjà été essayé et énumère les lettres invalides
         try:
             potentialWords.remove(word)
         except ValueError:
@@ -54,37 +55,38 @@ def processSearch(potentialWords, tryedWords, letterFound, letterInWord):
             wordLetter.append(caract)
     # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
     # dont les lettres sont mal positionnées + supprime les mots avec des lettres qui ne sont pas dans le mot recherché
-    potentialWordsBis = potentialWords
-    for potentialWord in potentialWords:
+    potentialWordsBis = potentialWords.copy()
+    for potentialWord in potentialWordsBis:
         delete = False
         if len(wordLetter) > 0:
             for letter in wordLetter:
                 if potentialWord.find(letter) != -1:
-                    potentialWordsBis.remove(potentialWord)
+                    potentialWords.remove(potentialWord)
                     delete = True
                     break
             if delete:
                 continue
         if len(letterFound) != len(potentialWord):
-            potentialWordsBis.remove(potentialWord)
+            potentialWords.remove(potentialWord)
             continue
         for letter in letters:
             if potentialWord.find(letter) == -1:
-                potentialWordsBis.remove(potentialWord)
+                potentialWords.remove(potentialWord)
                 delete = True
                 break
         if delete:
             continue
         for i in range(len(letterFound) - 1):
+            print(i)
             if letterFound[i] == ".":
                 continue
             if potentialWord[i] != letterFound[i]:
-                potentialWordsBis.remove(potentialWord)
+                potentialWords.remove(potentialWord)
                 break
-    print(len(potentialWordsBis))
-    potentialWordsBis.sort()
+    print(len(potentialWords))
+    potentialWords.sort()
     print(potentialWords)
-    return potentialWordsBis
+    return potentialWords
 
 
 # Execution de la procedure pour trouver le mot
