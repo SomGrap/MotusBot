@@ -21,7 +21,7 @@ def initSearch(tryedWords, found, inWord):
         for letter in word:
             wrd.append(letter)
     # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
-    # dont les lettres sont mal positionnées + supprime les mots avec des qui ne sont pas dans le mot recherché
+    # dont les lettres sont mal positionnées + supprime les mots avec des lettres qui ne sont pas dans le mot recherché
     for potentialWord in potentialWords:
         delete = False
         if len(wrd) > 0:
