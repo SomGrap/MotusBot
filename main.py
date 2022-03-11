@@ -6,7 +6,7 @@ from words import words
 # Permet de trouver le mot le plus problème selon les options cités au-dessus
 def initSearch(tryedWords, found, inWord):
     print("Initialisation ...")
-    potentialWords = words.get(found[0])
+    potentialWords = list(set(words.get(found[0])))
     letters = list(set(found + inWord))
     letters.remove(".")
     wrd = []
@@ -32,23 +32,25 @@ def initSearch(tryedWords, found, inWord):
                     break
             if delete:
                 continue
+        print(len(found), " ", len(potentialWord))
         if len(found) != len(potentialWord):
+            print("Supr")
             potentialWords.remove(potentialWord)
-        else:
-            for letter in letters:
-                if potentialWord.find(letter) == -1:
-                    potentialWords.remove(potentialWord)
-                    delete = True
-                    break
-            if delete:
+            continue
+        print("end")
+        for letter in letters:
+            if potentialWord.find(letter) == -1:
+                potentialWords.remove(potentialWord)
+                delete = True
+                break
+        if delete:
+            continue
+        for i in range(len(found) - 1):
+            if found[i] == ".":
                 continue
-            for i in range(len(found) - 1):
-                if found[i] == ".":
-                    continue
-                if potentialWord[i] != found[i]:
-                    potentialWords.remove(potentialWord)
-                    break
-
+            if potentialWord[i] != found[i]:
+                potentialWords.remove(potentialWord)
+                break
     return potentialWords
 
 
