@@ -9,38 +9,46 @@ def initSearch(tryedWords, found, inWord):
     potentialWords = words.get(found[0])
     letters = list(set(found + inWord))
     letters.remove(".")
+    wrd = []
     for word in tryedWords:
         # Supprime les mots qui ont déjà été essayé
         try:
             potentialWords.remove(word)
         except ValueError:
             print(f"Le mot {word} n'existe pas !")
-        # Supprime les mots avec des lettres qui ne sont pas dans le mot recherché
         for letter in letters:
             word = word.replace(letter, "")
-        wrd = []
         for letter in word:
             wrd.append(letter)
-        if len(wrd) > 0:
-            for potentialWord in potentialWords:
-                for letter in wrd:
-                    if potentialWord.find(letter) != -1:
-                        potentialWords.remove(potentialWord)
     # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
-    # dont les lettres sont mal positionnées
+    # dont les lettres sont mal positionnées + supprime les mots avec des qui ne sont pas dans le mot recherché
     for potentialWord in potentialWords:
+        delete = False
+        if len(wrd) > 0:
+            for letter in wrd:
+                if potentialWord.find(letter) != -1:
+                    potentialWords.remove(potentialWord)
+                    delete = True
+                    break
+            if delete:
+                continue
         if len(found) != len(potentialWord):
             potentialWords.remove(potentialWord)
-        for letter in letters:
-            if potentialWord.find(letter) == -1:
-                potentialWords.remove(potentialWord)
-                break
-        letterId = 0
-        for letter in found:
-            if letter != ".":
-                if potentialWord[letterId] != found[letterId]:
+        else:
+            for letter in letters:
+                if potentialWord.find(letter) == -1:
                     potentialWords.remove(potentialWord)
-            letterId += 1
+                    delete = True
+                    break
+            if delete:
+                continue
+            for i in range(len(found) - 1):
+                if found[i] == ".":
+                    continue
+                if potentialWord[i] != found[i]:
+                    potentialWords.remove(potentialWord)
+                    break
+
     return potentialWords
 
 
@@ -56,7 +64,6 @@ def ask():
     found = []
     for letter in founds:
         found.append(letter)
-    print(found)
     inWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ", "").split(",")
     return found, inWord
 
@@ -70,9 +77,7 @@ if __name__ == '__main__':
           "\\____|__  /\\____/|__| |____//____  >|______  /\\____/|__|  \n",
           "        \\/                       \\/        \\/             \nby SomGrap\n")
     print("MotusBot, le bot qui trouve les mots pour vous !\n")
-    wordsList = words
     wordsTryedList = input("Indiquez les mots que vous avez essayé (si vous avez essayez plusieurs mot, les séparés par"
                            " des virgules) >> ").lower().replace(" ", "").split(",")
-    print(wordsTryedList)
     lettersFound, lettersInWord = ask()
     print(initSearch(wordsTryedList, lettersFound, lettersInWord))
