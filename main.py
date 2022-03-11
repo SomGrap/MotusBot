@@ -50,26 +50,27 @@ def processSearch(potentialWords, tryedWords, letterFound, letterInWord):
             print(f"Le mot {word} n'existe pas !")
         for letter in letters:
             word = word.replace(letter, "")
-        for letter in word:
-            wordLetter.append(letter)
+        for caract in word:
+            wordLetter.append(caract)
     # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
     # dont les lettres sont mal positionnées + supprime les mots avec des lettres qui ne sont pas dans le mot recherché
+    potentialWordsBis = potentialWords
     for potentialWord in potentialWords:
         delete = False
         if len(wordLetter) > 0:
             for letter in wordLetter:
                 if potentialWord.find(letter) != -1:
-                    potentialWords.remove(potentialWord)
+                    potentialWordsBis.remove(potentialWord)
                     delete = True
                     break
             if delete:
                 continue
         if len(letterFound) != len(potentialWord):
-            potentialWords.remove(potentialWord)
+            potentialWordsBis.remove(potentialWord)
             continue
         for letter in letters:
             if potentialWord.find(letter) == -1:
-                potentialWords.remove(potentialWord)
+                potentialWordsBis.remove(potentialWord)
                 delete = True
                 break
         if delete:
@@ -78,12 +79,12 @@ def processSearch(potentialWords, tryedWords, letterFound, letterInWord):
             if letterFound[i] == ".":
                 continue
             if potentialWord[i] != letterFound[i]:
-                potentialWords.remove(potentialWord)
+                potentialWordsBis.remove(potentialWord)
                 break
-    print(len(potentialWords))
-    potentialWords.sort()
+    print(len(potentialWordsBis))
+    potentialWordsBis.sort()
     print(potentialWords)
-    return potentialWords
+    return potentialWordsBis
 
 
 # Execution de la procedure pour trouver le mot
