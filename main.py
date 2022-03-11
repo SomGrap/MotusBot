@@ -4,12 +4,44 @@ from words import words
 
 
 # Permet de trouver le mot le plus problème selon les options cités au-dessus
-def initSearch(tryedWords, found, inWord):
+def initSearch(letterFound, wordList = words):
     print("Initialisation ...")
-    potentialWords = list(set(words.get(found[0])))
-    letters = list(set(found + inWord))
+    potentialWords = list(set(wordList.get(letterFound[0])))
+    return potentialWords
+
+
+# Permet de demander à l'utilisateur l'avancer de la recherche
+def ask(isInit = False):
+    foundLetters = "."
+    letterInWord = ""
+    # Après l'initialisation de la recherche
+    if not isInit:
+        isFound = input("Le mot a t-il été trouvé ? (yes or no (y or n))").lower()
+        if isFound.startswith("y"):
+            return True, foundLetters, letterInWord
+
+    while foundLetters.startswith("."):
+        foundLetters = input(
+            "Indiquez les lettres trouvées (en rouge) exemple : M..US.O. où les points représentent les"
+            " lettres non trouvées >> ")
+        if foundLetters.startswith("."):
+            print("Il manque la première lettre !")
+    founds = foundLetters.lower().replace(" ", "")
+    foundLetters = []
+    for letter in founds:
+        foundLetters.append(letter)
+    letterInWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ",
+                                                                                                          "").split(",")
+    return foundLetters, letterInWord
+
+
+# Fait la recherche du mot
+def processSearch(potentialWords, tryedWords, letterFound, letterInWord):
+    # Liste des lettres présentes dans le mot
+    letters = list(set(letterFound + letterInWord))
     letters.remove(".")
-    wrd = []
+    wordLetter = []
+    # Pour chaque mot essayer
     for word in tryedWords:
         # Supprime les mots qui ont déjà été essayé
         try:
@@ -19,20 +51,20 @@ def initSearch(tryedWords, found, inWord):
         for letter in letters:
             word = word.replace(letter, "")
         for letter in word:
-            wrd.append(letter)
+            wordLetter.append(letter)
     # Supprime les mots qui n'ont pas les lettes qui sont dans le mot recherché, qui n'ont pas la même longueur ou
     # dont les lettres sont mal positionnées + supprime les mots avec des lettres qui ne sont pas dans le mot recherché
     for potentialWord in potentialWords:
         delete = False
-        if len(wrd) > 0:
-            for letter in wrd:
+        if len(wordLetter) > 0:
+            for letter in wordLetter:
                 if potentialWord.find(letter) != -1:
                     potentialWords.remove(potentialWord)
                     delete = True
                     break
             if delete:
                 continue
-        if len(found) != len(potentialWord):
+        if len(letterFound) != len(potentialWord):
             potentialWords.remove(potentialWord)
             continue
         for letter in letters:
@@ -42,31 +74,16 @@ def initSearch(tryedWords, found, inWord):
                 break
         if delete:
             continue
-        for i in range(len(found) - 1):
-            if found[i] == ".":
+        for i in range(len(letterFound) - 1):
+            if letterFound[i] == ".":
                 continue
-            if potentialWord[i] != found[i]:
+            if potentialWord[i] != letterFound[i]:
                 potentialWords.remove(potentialWord)
                 break
     print(len(potentialWords))
     potentialWords.sort()
+    print(potentialWords)
     return potentialWords
-
-
-# Permet de demander à l'utilisateur l'avancer de la recherche
-def ask():
-    found = "."
-    while found.startswith("."):
-        found = input("Indiquez les lettres trouvées (en rouge) exemple : M..US.O. où les points représentent les"
-                      " lettres non trouvées >> ")
-        if found.startswith("."):
-            print("Il manque la première lettre !")
-    founds = found.lower().replace(" ", "")
-    found = []
-    for letter in founds:
-        found.append(letter)
-    inWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ", "").split(",")
-    return found, inWord
 
 
 # Execution de la procedure pour trouver le mot
@@ -80,5 +97,9 @@ if __name__ == '__main__':
     print("MotusBot, le bot qui trouve les mots pour vous !\n")
     wordsTryedList = input("Indiquez les mots que vous avez essayé (si vous avez essayez plusieurs mot, les séparés par"
                            " des virgules) >> ").lower().replace(" ", "").split(",")
-    lettersFound, lettersInWord = ask()
-    print(initSearch(wordsTryedList, lettersFound, lettersInWord))
+    lettersFound, lettersInWord = ask(True)
+    wordsList = initSearch(lettersFound)
+    found = False
+    while not found:
+        wordsList = processSearch(wordsList, wordsTryedList, lettersFound, lettersInWord)
+        found, lettersFound, lettersInWord = ask()
