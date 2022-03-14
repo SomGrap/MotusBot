@@ -2,7 +2,6 @@
 
 from wordDictionary import *
 
-
 wordsDictionary = {}
 
 
@@ -59,21 +58,25 @@ def ask(isInit = False):
         if isFoundAsk.startswith("y"):
             return True, tryedWords, foundLetters, lettersInWord
 
-    tryedWords = input("\nIndiquez le(s) mot(s) que vous avez essayé (séparez les mots par des virgules) >> ").lower().replace(" ", "").split(",")
+    tryedWords = input(
+        "\nIndiquez le(s) mot(s) que vous avez essayé (séparez les mots par des virgules) >> ").lower().replace(" ",
+                                                                                                                "")\
+        .split(",")
     isInvalide = True
     while isInvalide:
         foundLetters = input(
             "Indiquez les lettres trouvées (en rouge) exemple : M..US.O. où les points représentent les"
             " lettres non trouvées >> ").replace(" ", "").lower()
 
-        if foundLetters.startswith(".") or foundLetters == "" or (len(foundLetters) != len(tryedWords[0]) and len(tryedWords[0]) != 0):
+        if foundLetters.startswith(".") or foundLetters == "" or (
+                len(foundLetters) != len(tryedWords[0]) and len(tryedWords[0]) != 0):
             print("La valeur est invalide !")
         else:
             isInvalide = False
 
-
     lettersInWord = input("Indiquez les lettres en jaune (séparées par des virgules) >> ").lower().replace(" ",
-                                                                                                          "").split(",")
+                                                                                                           "").split(
+        ",")
     return False, tryedWords, list(foundLetters), lettersInWord
 
 
@@ -114,7 +117,6 @@ def processSearch(potentialWords, tryedWords, lettersFound, lettersInWord):
             continue
 
         if len(lettersFound) != len(potentialWord):
-            toAdd = False
             continue
 
         for letter in uniqueLetters:
