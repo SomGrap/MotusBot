@@ -43,7 +43,10 @@ def sortWords(words):
 
     isAnswered = False
     while not isAnswered:
-        choice = int(input(f"\nParamètres du triage du dictionnaire de mots\n| 1 - Longueur minimum du mot ({minWordLength})\n| 2 - Longueur maximum du mot ({maxWordLength})\n| 3 - Liste des caractères autorisés\n| 4 - Valider les paramètres\n| 5 - Quitter\nEntrer le numéro du paramètre qui vous intéresse : ")) | 0
+        choice = int(input(f"\nParamètres du triage du dictionnaire de mots\n| 1 - Longueur minimum du mot"
+                           f" ({minWordLength})\n| 2 - Longueur maximum du mot ({maxWordLength})\n| 3 - Liste"
+                           f" des caractères autorisés\n| 4 - Valider les paramètres\n| 5 - Quitter\nEntrer le numéro"
+                           f" du paramètre qui vous intéresse : ")) | 0
 
         match choice:
             case 1:
@@ -77,6 +80,7 @@ def sortWords(words):
 
     for letter in authorizedLetters:
         wordsResult.setdefault(letter, [])
+        lettersRanking.setdefault(letter, 0)
 
     print("- Lancement du trie !")
     wordNb = 0
@@ -115,7 +119,7 @@ def saveDictionary(dictionary):
 # Permet de mettre à jour le dictionnaire de mots si le fichier words.txt existe
 def synchronizeDictionary():
     with open("./words.txt", "r") as wordsFile:
-        words  = wordsFile.readlines()
+        words = wordsFile.readlines()
 
     wordsDictionary = {}
 
@@ -130,6 +134,8 @@ def synchronizeDictionary():
 
 # Permet de calculer le nombre de lettre pour chaque mot dans le dictionnaire et ainsi faire un classement
 def doLetterRanking(dictionary):
+    global lettersRanking
+
     for letter, words in dictionary.items():
         for word in words:
             for ltr in word:
@@ -140,4 +146,5 @@ def doLetterRanking(dictionary):
     for key, value in lettersRankingBis:
         lettersRanking[key] = score
         score -= 1
+
     return lettersRanking

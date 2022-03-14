@@ -86,7 +86,7 @@ def processSearch(potentialWords, tryedWords, lettersFound, lettersInWord):
 
     invalidLetters = []
 
-    # Pour chaque mot on essayé
+    # Pour chaque mot on essaye
     for word in tryedWords:
         # Supprime les mots qui ont déjà été essayé et énumère les lettres invalides
         try:
